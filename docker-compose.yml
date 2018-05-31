@@ -54,7 +54,18 @@ services:
   nodered:
     image: nodered/node-red-docker
     ports: ['0.0.0.0:1880:1880']
+    volumes: ["${NODERED_DIR:-./local-storage/nodered/data}:/data"]
+    environment:
+      - API_URL_CONVERSE=${API_URL_CONVERSE:-http://api:7500/agent/1/converse}
+    networks: ['alpha-nlu-network']
   botkit:
     image: grumpycat-botkit
+    volumes:
+      - ./secrets.env:/app/secrets.env
+    environment:
+      - NODERED_URL=${NODERED_URL:-http://nodered:1880}
+    networks: ['alpha-nlu-network']
+    #env_file:
+    #  - ./secrets.env
 
 networks: {alpha-nlu-network: {}}
